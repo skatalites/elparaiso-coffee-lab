@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El Para&iacute;so Coffee Lab | Taste the Mountain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Schibsted+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #E4E9DB;
+    --ink: #13291D;
+    --cherry: #C4133F;
+    --honey: #EFC95A;
+    --mist: #C5D0B9;
+    --band: #13291D;
+    --band-fg: #E4E9DB;
+    --card: #F7F4E8;
+    --cup: #2A1A12;
+    --display: "Young Serif", Georgia, "Times New Roman", serif;
+    --body: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color-scheme: light;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --card: #1B3226;
+      --paper: #0F1F16; --ink: #E6EBDD; --cherry: #FF5A7E; --honey: #EFC95A;
+      --mist: #244032; --band: #07110B; --band-fg: #E6EBDD; --cup: #2A1A12;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --card: #1B3226;
+    --paper: #0F1F16; --ink: #E6EBDD; --cherry: #FF5A7E; --honey: #EFC95A;
+    --mist: #244032; --band: #07110B; --band-fg: #E6EBDD; --cup: #2A1A12;
+    color-scheme: dark;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3 { font-family: var(--display); font-weight: 400; line-height: 1.05; margin: 0; font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; }
+  p { margin: 0; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--cherry); outline-offset: 3px; }
+
+  .wrap { width: min(1120px, 100% - 2.5rem); margin-inline: auto; }
+
+  /* Language switch */
+  .lang {
+    position: fixed; top: 0; right: 0; z-index: 20;
+    padding: calc(0.75rem + env(safe-area-inset-top, 0px)) 1rem 0 0;
+  }
+  .lang .pill {
+    display: inline-flex; border: 2px solid var(--ink); border-radius: 999px;
+    background: var(--paper); overflow: hidden;
+  }
+  .lang button {
+    font: 700 0.9rem var(--body); letter-spacing: 0.02em;
+    padding: 0.4rem 0.95rem; border: 0; cursor: pointer;
+    background: transparent; color: var(--ink);
+  }
+  .lang button[aria-pressed="true"] { background: var(--cherry); color: #fff; }
+  .lang button:focus-visible { outline-offset: -3px; }
+
+  /* Hero */
+  .hero { padding-block: clamp(3.5rem, 7vw, 5.5rem) clamp(2.5rem, 6vw, 5rem); }
+  .hero .wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: center;
+  }
+  .brand { font-family: var(--display); font-size: 1.25rem; color: var(--cherry); margin-bottom: clamp(2rem, 8vw, 6rem); }
+  .brand span { color: var(--ink); }
+  .hero h1 { font-size: clamp(3.4rem, 9vw, 7.2rem); letter-spacing: -0.02em; color: var(--ink); }
+  .hero h1 em { font-style: normal; color: var(--cherry); display: block; }
+  .lede { margin-top: 1.5rem; max-width: 30rem; font-size: 1.2rem; }
+  .btn {
+    display: inline-block; margin-top: 2rem;
+    background: var(--cherry); color: #fff;
+    font-weight: 700; text-decoration: none;
+    padding: 0.95rem 1.7rem; border-radius: 999px;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  .map { width: 100%; height: auto; display: block; }
+  .map .ring { fill: none; stroke: var(--ink); stroke-width: 1.2; opacity: 0.45; }
+  .map .ring.index { stroke-width: 2.4; opacity: 0.9; }
+  .map .tag { font-family: var(--body); font-size: 15px; font-weight: 700; fill: var(--cherry); paint-order: stroke; stroke: var(--paper); stroke-width: 5px; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .map .ring { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.6s ease-out forwards; }
+  @media (prefers-reduced-motion: reduce) {
+    .map .ring { animation: none; stroke-dashoffset: 0; }
+    html { scroll-behavior: auto; }
+  }
+
+  /* Intro */
+  .intro { padding-block: clamp(2rem, 5vw, 4rem); }
+  .intro p { max-width: 44rem; font-family: var(--display); font-size: clamp(1.5rem, 3.4vw, 2.3rem); line-height: 1.25; }
+
+  /* Benefits: stepped like terraces */
+  .benefits { padding-block: clamp(2rem, 5vw, 4rem); }
+  .benefits h2, .coffee h2, .brew h2 { font-size: clamp(2rem, 5vw, 3.2rem); margin-bottom: 2rem; }
+  .terrace { list-style: none; margin: 0; padding: 0; }
+  .terrace li {
+    border-top: 2px solid var(--ink);
+    padding: 1.4rem 0 1.8rem;
+    display: grid;
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+    gap: 1rem 3rem;
+  }
+  .terrace li:nth-child(2) { margin-left: clamp(0rem, 7vw, 6rem); }
+  .terrace li:nth-child(3) { margin-left: clamp(0rem, 14vw, 12rem); }
+  .terrace h3 { font-size: 1.6rem; color: var(--cherry); }
+
+  /* Postcards */
+  .postcards { padding-block: clamp(2rem, 5vw, 4rem); }
+  .postcards h2 { font-size: clamp(2rem, 5vw, 3.2rem); margin-bottom: 0.75rem; }
+  .pc-hint { margin-bottom: 2.5rem; }
+  .cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2.5rem clamp(1.5rem, 4vw, 3rem); }
+  .tilt { perspective: 1400px; }
+  .cards .tilt:nth-child(1) { transform: rotate(-1.5deg); }
+  .cards .tilt:nth-child(2) { transform: rotate(1deg); }
+  .cards .tilt:nth-child(3) { transform: rotate(1.3deg); }
+  .cards .tilt:nth-child(4) { transform: rotate(-1deg); }
+  .pc { display: block; width: 100%; padding: 0; border: 0; background: none; font: inherit; color: inherit; text-align: left; cursor: pointer; }
+  .pc:focus-visible { outline: 3px solid var(--cherry); outline-offset: 8px; }
+  .faces { display: grid; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(.3, .7, .2, 1); }
+  .pc[aria-pressed="true"] .faces { transform: rotateY(180deg); }
+  .face { grid-area: 1 / 1; min-height: 17.5rem; -webkit-backface-visibility: hidden; backface-visibility: hidden; background: var(--card); border: 2px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); padding: 1.1rem 1.3rem; }
+  .front { display: flex; flex-direction: column; justify-content: space-between; gap: 0.6rem; }
+  .greet { font-family: var(--display); font-size: 1.05rem; color: var(--cherry); }
+  .ico { width: 100%; height: 8.5rem; fill: none; stroke: var(--ink); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .foot { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .mname { font-family: var(--display); font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; font-size: 1.6rem; line-height: 1.1; display: block; }
+  .flip { font-size: 0.9rem; font-weight: 700; color: var(--cherry); }
+  .back { transform: rotateY(180deg); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.2rem; }
+  .msg { display: block; }
+  .back .mname { color: var(--cherry); margin-bottom: 0.6rem; }
+  .line { display: block; padding: 0.4rem 0; border-bottom: 1px dotted var(--ink); font-size: 0.98rem; line-height: 1.4; }
+  .side { display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 1rem; border-left: 2px solid var(--ink); padding-left: 1rem; }
+  .stamp { width: 3.6rem; aspect-ratio: 4 / 5; border: 2px dashed var(--cherry); display: grid; place-items: center; padding: 0.35rem; }
+  .stamp svg { width: 100%; height: auto; }
+  .postmark { width: 4.3rem; height: 4.3rem; border-radius: 50%; border: 2px solid var(--ink); display: grid; place-items: center; text-align: center; font-size: 0.7rem; font-weight: 700; line-height: 1.15; transform: rotate(-14deg); opacity: 0.75; }
+  @media (prefers-reduced-motion: reduce) { .faces { transition: none; } }
+  @media (max-width: 760px) {
+    .cards { grid-template-columns: minmax(0, 1fr); }
+    .cards .tilt:nth-child(n) { transform: none; }
+  }
+
+  /* Downloads */
+  .dl { margin-top: 3.5rem; }
+  .dl h3 { font-size: 1.8rem; color: var(--cherry); margin-bottom: 0.5rem; }
+  .dl-note { max-width: 40rem; }
+  .dl .btn { margin-top: 1.4rem; }
+  .dl-list { list-style: none; margin: 2rem 0 0; padding: 0; max-width: 40rem; }
+  .dl-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 0.5rem 1.5rem; align-items: baseline; border-top: 2px solid var(--ink); padding: 0.9rem 0; }
+  .dl-list li:last-child { border-bottom: 2px solid var(--ink); }
+  .dl-name { font-family: var(--display); font-size: 1.3rem; font-variant-numeric: lining-nums; font-feature-settings: "lnum" 1; }
+  .dl-list a { font-weight: 700; text-decoration-color: var(--honey); text-decoration-thickness: 3px; text-underline-offset: 4px; }
+  @media (max-width: 760px) { .dl-list li { grid-template-columns: 1fr 1fr; } .dl-name { grid-column: 1 / -1; } }
+
+  /* Coffee */
+  .coffee { background: var(--mist); padding-block: clamp(2.5rem, 6vw, 5rem); }
+  .coffee .wrap { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); }
+  .coffee p.story { max-width: 30rem; }
+  dl.facts { margin: 2rem 0 0; display: grid; grid-template-columns: max-content 1fr; gap: 0.7rem 1.5rem; }
+  dl.facts dt { font-weight: 700; }
+  dl.facts dd { margin: 0; border-bottom: 1px dotted var(--ink); padding-bottom: 0.7rem; }
+  .ascent h3 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+  .ascent ol { list-style: none; margin: 0; padding: 0; border-left: 3px solid var(--cherry); }
+  .ascent li { padding: 0 0 1.6rem 1.5rem; position: relative; }
+  .ascent li:nth-child(2) { margin-left: clamp(0rem, 4vw, 2.5rem); }
+  .ascent li:nth-child(3) { margin-left: clamp(0rem, 8vw, 5rem); padding-bottom: 0; }
+  .ascent li::before {
+    content: ""; position: absolute; left: -9px; top: 0.35rem;
+    width: 15px; height: 15px; border-radius: 50%; background: var(--honey);
+    border: 3px solid var(--cherry);
+  }
+  .ascent b { font-family: var(--display); font-weight: 400; font-size: 1.35rem; display: block; }
+
+  /* Brew */
+  .brew { padding-block: clamp(2.5rem, 6vw, 5rem); }
+  .brew .cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem clamp(2rem, 5vw, 5rem); }
+  .brew h3 { font-size: 1.8rem; margin-bottom: 0.5rem; color: var(--cherry); }
+  .recipe { margin-top: 2.5rem; padding: 1.2rem 1.5rem; border-left: 6px solid var(--honey); background: var(--mist); max-width: 40rem; }
+
+  /* Contact */
+  .contact { background: var(--band); color: var(--band-fg); padding-block: clamp(3rem, 7vw, 6rem); }
+  .contact h2 { font-size: clamp(2.6rem, 8vw, 5.5rem); margin-bottom: 1.5rem; }
+  .contact p { max-width: 34rem; }
+  .contact ul { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; gap: 0.5rem; font-size: 1.25rem; }
+  .contact a { text-decoration-color: var(--honey); text-underline-offset: 4px; }
+  .contact .small { margin-top: 3rem; font-size: 0.9rem; opacity: 0.7; }
+
+  @media (max-width: 760px) {
+    .hero .wrap, .coffee .wrap, .brew .cols, .terrace li { grid-template-columns: minmax(0, 1fr); }
+    .brand { margin-bottom: 2rem; }
+    .map { max-width: 420px; margin-inline: auto; }
+  }
+  @media print {
+    :root { --paper: #fff; }
+    .btn, .lang, .dl { display: none; }
+    .map .ring { animation: none; stroke-dashoffset: 0; }
+    section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="lang" aria-label="Language / Idioma">
+  <div class="pill">
+    <button type="button" data-lang="en" aria-pressed="true">EN</button>
+    <button type="button" data-lang="es" aria-pressed="false">ES</button>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="brand">El Para&iacute;so <span>Coffee Lab.☕🔬</span></div>
+      <h1 data-i18n-html="h1">Taste the <em>mountain.</em></h1>
+      <p class="lede" data-i18n="lede">A guided coffee tasting that takes you from the cherry on the mountain to the cup in your hands.</p>
+      <a class="btn" href="#contact" data-i18n="cta">Reserve your seat</a>
+    </div>
+    <svg class="map" id="map" viewBox="0 0 640 640" role="img" aria-label="A map of contour lines rising to a summit, where a cup of coffee sits at the top."></svg>
+  </div>
+</header>
+
+<section class="intro">
+  <div class="wrap">
+    <p data-i18n="intro">The Summit Tasting is a 90-minute experience for people who want to understand what is inside their cup. We pour three coffees side by side, teach you to smell, sip, and describe them, and show you how the brewing method changes the flavor.</p>
+  </div>
+</section>
+
+<section class="benefits">
+  <div class="wrap">
+    <h2 data-i18n="benefitsTitle">Why climb with us</h2>
+    <ul class="terrace">
+      <li>
+        <h3 data-i18n="b1t">Guided by trained baristas</h3>
+        <p data-i18n="b1p">Every session is led by a barista who answers your questions and helps you find the right words for what you taste.</p>
+      </li>
+      <li>
+        <h3 data-i18n="b2t">Three coffees, one table</h3>
+        <p data-i18n="b2p">You compare origins and brewing methods side by side, so the differences become easy to notice, even if this is your first tasting.</p>
+      </li>
+      <li>
+        <h3 data-i18n="b3t">Take the mountain home</h3>
+        <p data-i18n="b3p">Every guest leaves with 250 grams of the featured coffee and a postcard-size brewing guide with recipes for French press, moka pot, Chemex, and V60.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="postcards">
+  <div class="wrap">
+    <h2 data-i18n="pcTitle">Four postcards to take home</h2>
+    <p class="pc-hint" data-i18n="pcHint">Tap a postcard to flip it and read the recipe.</p>
+    <div class="cards">
+
+      <div class="tilt">
+        <button type="button" class="pc" aria-pressed="false">
+          <span class="faces">
+            <span class="face front">
+              <span class="greet" data-i18n="pcGreet">Greetings from the mountain</span>
+              <svg class="ico" viewBox="0 0 120 120" aria-hidden="true"><rect x="41" y="70" width="38" height="34" fill="var(--cherry)" stroke="none"/><circle cx="60" cy="14" r="6"/><path d="M60 20V38"/><rect x="30" y="38" width="60" height="8" rx="3"/><path d="M34 46L38 104Q38 108 42 108H78Q82 108 82 104L86 46"/><path d="M86 58H100Q108 58 108 68V84Q108 94 98 94H84"/></svg>
+              <span class="foot"><span class="mname" data-i18n="pcFpName">French press</span><span class="flip" data-i18n="pcFlip">Flip it</span></span>
+            </span>
+            <span class="face back" aria-hidden="true">
+              <span class="msg">
+                <span class="mname" data-i18n="pcFpName">French press</span>
+                <span class="line" data-i18n="pcFp1">30 g of coarse coffee</span>
+                <span class="line" data-i18n="pcFp2">450 ml of water at 93 °C</span>
+                <span class="line" data-i18n="pcFp3">Steep for 4 minutes, then press slowly.</span>
+              </span>
+              <span class="side"><span class="stamp" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="var(--cherry)"/><circle cx="20" cy="20" r="9" fill="var(--cup)"/></svg></span><span class="postmark" aria-hidden="true">Riosucio<br>Caldas</span></span>
+            </span>
+          </span>
+        </button>
+      </div>
+
+      <div class="tilt">
+        <button type="button" class="pc" aria-pressed="false">
+          <span class="faces">
+            <span class="face front">
+              <span class="greet" data-i18n="pcGreet">Greetings from the mountain</span>
+              <svg class="ico" viewBox="0 0 120 120" aria-hidden="true"><path d="M36 76H84L90 108H30Z" fill="var(--cherry)"/><path d="M36 76L30 36H90L84 76"/><path d="M34 36Q60 14 86 36"/><circle cx="60" cy="18" r="3"/><path d="M30 40L18 36"/><path d="M90 40H104Q112 40 112 50V66Q112 76 102 76H88"/></svg>
+              <span class="foot"><span class="mname" data-i18n="pcMkName">Moka pot</span><span class="flip" data-i18n="pcFlip">Flip it</span></span>
+            </span>
+            <span class="face back" aria-hidden="true">
+              <span class="msg">
+                <span class="mname" data-i18n="pcMkName">Moka pot</span>
+                <span class="line" data-i18n="pcMk1">Fill the base with hot water up to the valve.</span>
+                <span class="line" data-i18n="pcMk2">Add medium-fine coffee to the basket, without tamping.</span>
+                <span class="line" data-i18n="pcMk3">Heat on low and remove when the flow turns pale.</span>
+              </span>
+              <span class="side"><span class="stamp" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="var(--cherry)"/><circle cx="20" cy="20" r="9" fill="var(--cup)"/></svg></span><span class="postmark" aria-hidden="true">Riosucio<br>Caldas</span></span>
+            </span>
+          </span>
+        </button>
+      </div>
+
+      <div class="tilt">
+        <button type="button" class="pc" aria-pressed="false">
+          <span class="faces">
+            <span class="face front">
+              <span class="greet" data-i18n="pcGreet">Greetings from the mountain</span>
+              <svg class="ico" viewBox="0 0 120 120" aria-hidden="true"><path d="M35.3 92H84.7L92.8 106H27.2Z" fill="var(--cherry)" stroke="none"/><path d="M28 18H92L66 60H54Z"/><path d="M54 60L26 108H94L66 60"/><rect x="50" y="55" width="20" height="9" rx="2" fill="var(--honey)"/></svg>
+              <span class="foot"><span class="mname">Chemex</span><span class="flip" data-i18n="pcFlip">Flip it</span></span>
+            </span>
+            <span class="face back" aria-hidden="true">
+              <span class="msg">
+                <span class="mname">Chemex</span>
+                <span class="line" data-i18n="pcCx1">40 g of medium-coarse coffee</span>
+                <span class="line" data-i18n="pcCx2">600 ml of water at 92 °C, starting with an 80 ml bloom</span>
+                <span class="line" data-i18n="pcCx3">Pour in circles and finish in about 4 minutes.</span>
+              </span>
+              <span class="side"><span class="stamp" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="var(--cherry)"/><circle cx="20" cy="20" r="9" fill="var(--cup)"/></svg></span><span class="postmark" aria-hidden="true">Riosucio<br>Caldas</span></span>
+            </span>
+          </span>
+        </button>
+      </div>
+
+      <div class="tilt">
+        <button type="button" class="pc" aria-pressed="false">
+          <span class="faces">
+            <span class="face front">
+              <span class="greet" data-i18n="pcGreet">Greetings from the mountain</span>
+              <svg class="ico" viewBox="0 0 120 120" aria-hidden="true"><path d="M42 90H78V98Q78 106 70 106H50Q42 106 42 98Z" fill="var(--cherry)" stroke="none"/><path d="M22 28H98L66 70H54Z"/><path d="M40 28L57 67M60 28V67M80 28L63 67"/><path d="M40 78H80V98Q80 108 70 108H50Q40 108 40 98Z"/><path d="M80 84H88Q94 84 94 90Q94 98 86 98H80"/></svg>
+              <span class="foot"><span class="mname">V60</span><span class="flip" data-i18n="pcFlip">Flip it</span></span>
+            </span>
+            <span class="face back" aria-hidden="true">
+              <span class="msg">
+                <span class="mname">V60</span>
+                <span class="line" data-i18n="pcV1">20 g of medium-fine coffee</span>
+                <span class="line" data-i18n="pcV2">300 ml of water at 92 °C, starting with a 40 ml bloom</span>
+                <span class="line" data-i18n="pcV3">Pour in circles and finish in about 3 minutes.</span>
+              </span>
+              <span class="side"><span class="stamp" aria-hidden="true"><svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="15" fill="var(--cherry)"/><circle cx="20" cy="20" r="9" fill="var(--cup)"/></svg></span><span class="postmark" aria-hidden="true">Riosucio<br>Caldas</span></span>
+            </span>
+          </span>
+        </button>
+      </div>
+
+    </div>
+
+    <div class="dl">
+      <h3 data-i18n="dlTitle">Download for printing</h3>
+      <p class="dl-note" data-i18n="dlNote">Each postcard is 6 × 4 inches at 300 dpi. Print the front and the back on opposite sides of the same sheet.</p>
+      <a class="btn" href="postcards/postales-en.pdf" data-pdf download data-i18n="dlPdf">All four postcards (PDF)</a>
+      <ul class="dl-list">
+        <li>
+          <span class="dl-name" data-i18n="pcFpName">French press</span>
+          <a href="postcards/en/01-french-press-front-en.png" data-png="01-french-press-front" download data-i18n="dlFront">Front (PNG)</a>
+          <a href="postcards/en/02-french-press-back-en.png" data-png="02-french-press-back" download data-i18n="dlBack">Back (PNG)</a>
+        </li>
+        <li>
+          <span class="dl-name" data-i18n="pcMkName">Moka pot</span>
+          <a href="postcards/en/03-moka-pot-front-en.png" data-png="03-moka-pot-front" download data-i18n="dlFront">Front (PNG)</a>
+          <a href="postcards/en/04-moka-pot-back-en.png" data-png="04-moka-pot-back" download data-i18n="dlBack">Back (PNG)</a>
+        </li>
+        <li>
+          <span class="dl-name">Chemex</span>
+          <a href="postcards/en/05-chemex-front-en.png" data-png="05-chemex-front" download data-i18n="dlFront">Front (PNG)</a>
+          <a href="postcards/en/06-chemex-back-en.png" data-png="06-chemex-back" download data-i18n="dlBack">Back (PNG)</a>
+        </li>
+        <li>
+          <span class="dl-name">V60</span>
+          <a href="postcards/en/07-v60-front-en.png" data-png="07-v60-front" download data-i18n="dlFront">Front (PNG)</a>
+          <a href="postcards/en/08-v60-back-en.png" data-png="08-v60-back" download data-i18n="dlBack">Back (PNG)</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="coffee">
+  <div class="wrap">
+    <div>
+      <h2 data-i18n="coffeeTitle">This season’s summit: Colibrí</h2>
+      <p class="story" data-i18n="story">Colibrí grows at Finca El Paraíso, in the Ojo de Agua area of Riosucio, Caldas, in the heart of Colombia’s coffee region. At about 1,800 meters above sea level, the mountain air is cool and the cherries ripen slowly, and slow ripening gives the coffee more sugar and a cleaner taste.</p>
+      <dl class="facts">
+        <dt data-i18n="fOrigin">Origin</dt><dd>Finca El Paraíso, vereda Ojo de Agua, Riosucio, Caldas, Colombia</dd>
+        <dt data-i18n="fVariety">Variety</dt><dd>Castillo</dd>
+        <dt data-i18n="fAltitude">Altitude</dt><dd data-i18n="vAltitude">About 1,800 meters</dd>
+        <dt data-i18n="fProcess">Process</dt><dd data-i18n="vProcess">Washed</dd>
+        <dt data-i18n="fRoast">Roast</dt><dd data-i18n="vRoast">Medium</dd>
+        <dt data-i18n="fBody">Body</dt><dd data-i18n="vBody">Medium and silky</dd>
+        <dt data-i18n="fAcidity">Acidity</dt><dd data-i18n="vAcidity">Bright and juicy</dd>
+      </dl>
+    </div>
+    <div class="ascent">
+      <h3 data-i18n="climbTitle">How the flavor climbs</h3>
+      <ol>
+        <li><b data-i18n="n1t">Panela</b><span data-i18n="n1p">The first sip is sweet and round, like warm brown sugar.</span></li>
+        <li><b data-i18n="n2t">Red apple</b><span data-i18n="n2p">In the middle, the cup turns juicy and fresh.</span></li>
+        <li><b data-i18n="n3t">Orange peel</b><span data-i18n="n3p">The finish is clean, citrusy, and long.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="brew">
+  <div class="wrap">
+    <h2 data-i18n="brewTitle">Two ways to pour it</h2>
+    <div class="cols">
+      <div>
+        <h3>V60</h3>
+        <p data-i18n="v60">A cone-shaped dripper with a paper filter. It makes a clean, bright cup that highlights the fruit in the coffee.</p>
+      </div>
+      <div>
+        <h3>Chemex</h3>
+        <p data-i18n="chemex">A glass brewer with a thick filter. It removes the oils and creates a smooth, elegant cup with a soft sweetness.</p>
+      </div>
+    </div>
+    <p class="recipe" data-i18n="recipe">Our starting recipe uses a ratio of one to fifteen: 20 grams of ground coffee for 300 milliliters of water at 92 degrees Celsius.</p>
+  </div>
+</section>
+
+<footer class="contact" id="contact">
+  <div class="wrap">
+    <h2 data-i18n="contactTitle">Reserve your seat.</h2>
+    <p data-i18n="contactP">Sessions run every Friday and Saturday at 4:00 p.m. Each table has only eight seats, so book early.</p>
+    <ul>
+      <li><span data-i18n="cEmail">Email:</span> <a href="mailto:hello@elparaisocoffeelab.co">hello@elparaisocoffeelab.co</a></li>
+      <li><span data-i18n="cPhone">Phone and WhatsApp:</span> +57 301 725 7889</li>
+      <li>Instagram: @elparamisocoffeelab</li>
+      <li data-i18n="cLocation">Location: Riosucio, Caldas, Colombia.</li>
+    </ul>
+    <p class="small" data-i18n="small">El Paraíso Coffee Lab. Specialty coffee, tasted slowly with 🤍.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var T = {
+    en: {
+      title: "El Paraíso Coffee Lab | Taste the Mountain",
+      aria: "A map of contour lines rising to a summit, where a cup of coffee sits at the top.",
+      tag: "1,800 m",
+      h1: "Taste the <em>mountain.</em>",
+      lede: "A guided coffee tasting that takes you from the cherry on the mountain to the cup in your hands.",
+      cta: "Reserve your seat",
+      intro: "The Summit Tasting is a 90-minute experience for people who want to understand what is inside their cup. We pour three coffees side by side, teach you to smell, sip, and describe them, and show you how the brewing method changes the flavor.",
+      benefitsTitle: "Why climb with us",
+      b1t: "Guided by trained baristas",
+      b1p: "Every session is led by a barista who answers your questions and helps you find the right words for what you taste.",
+      b2t: "Three coffees, one table",
+      b2p: "You compare origins and brewing methods side by side, so the differences become easy to notice, even if this is your first tasting.",
+      b3t: "Take the mountain home",
+      b3p: "Every guest leaves with 250 grams of the featured coffee and a postcard-size brewing guide with recipes for French press, moka pot, Chemex, and V60.",
+      pcTitle: "Four postcards to take home",
+      pcHint: "Tap a postcard to flip it and read the recipe.",
+      pcGreet: "Greetings from the mountain",
+      pcFlip: "Flip it",
+      dlTitle: "Download for printing",
+      dlNote: "Each postcard is 6 × 4 inches at 300 dpi. Print the front and the back on opposite sides of the same sheet.",
+      dlPdf: "All four postcards (PDF)",
+      dlFront: "Front (PNG)",
+      dlBack: "Back (PNG)",
+      pcFpName: "French press",
+      pcFp1: "30 g of coarse coffee",
+      pcFp2: "450 ml of water at 93 °C",
+      pcFp3: "Steep for 4 minutes, then press slowly.",
+      pcMkName: "Moka pot",
+      pcMk1: "Fill the base with hot water up to the valve.",
+      pcMk2: "Add medium-fine coffee to the basket, without tamping.",
+      pcMk3: "Heat on low and remove when the flow turns pale.",
+      pcCx1: "40 g of medium-coarse coffee",
+      pcCx2: "600 ml of water at 92 °C, starting with an 80 ml bloom",
+      pcCx3: "Pour in circles and finish in about 4 minutes.",
+      pcV1: "20 g of medium-fine coffee",
+      pcV2: "300 ml of water at 92 °C, starting with a 40 ml bloom",
+      pcV3: "Pour in circles and finish in about 3 minutes.",
+      coffeeTitle: "This season’s summit: Colibrí",
+      story: "Colibrí grows at Finca El Paraíso, in the Ojo de Agua area of Riosucio, Caldas, in the heart of Colombia’s coffee region. At about 1,800 meters above sea level, the mountain air is cool and the cherries ripen slowly, and slow ripening gives the coffee more sugar and a cleaner taste.",
+      fOrigin: "Origin", fVariety: "Variety", fAltitude: "Altitude", fProcess: "Process",
+      fRoast: "Roast", fBody: "Body", fAcidity: "Acidity",
+      vAltitude: "About 1,800 meters", vProcess: "Washed", vRoast: "Medium",
+      vBody: "Medium and silky", vAcidity: "Bright and juicy",
+      climbTitle: "How the flavor climbs",
+      n1t: "Panela", n1p: "The first sip is sweet and round, like warm brown sugar.",
+      n2t: "Red apple", n2p: "In the middle, the cup turns juicy and fresh.",
+      n3t: "Orange peel", n3p: "The finish is clean, citrusy, and long.",
+      brewTitle: "Two ways to pour it",
+      v60: "A cone-shaped dripper with a paper filter. It makes a clean, bright cup that highlights the fruit in the coffee.",
+      chemex: "A glass brewer with a thick filter. It removes the oils and creates a smooth, elegant cup with a soft sweetness.",
+      recipe: "Our starting recipe uses a ratio of one to fifteen: 20 grams of ground coffee for 300 milliliters of water at 92 degrees Celsius.",
+      contactTitle: "Reserve your seat.",
+      contactP: "Sessions run every Friday and Saturday at 4:00 p.m. Each table has only eight seats, so book early.",
+      cEmail: "Email:", cPhone: "Phone and WhatsApp:",
+      cLocation: "Location: Riosucio, Caldas, Colombia.",
+      small: "El Paraíso Coffee Lab. Specialty coffee, tasted slowly with 🤍."
+    },
+    es: {
+      title: "El Paraíso Coffee Lab | Prueba la montaña",
+      aria: "Un mapa de curvas de nivel que sube hasta una cumbre, donde hay una taza de café en la cima.",
+      tag: "1.800 m",
+      h1: "Prueba la <em>montaña.</em>",
+      lede: "Una cata de café guiada que te lleva de la cereza en la montaña a la taza en tus manos.",
+      cta: "Reserva tu cupo",
+      intro: "La Cata de la Cumbre es una experiencia de 90 minutos para quienes quieren entender qué hay dentro de su taza. Servimos tres cafés lado a lado, te enseñamos a olerlos, probarlos y describirlos, y te mostramos cómo el método de preparación cambia el sabor.",
+      benefitsTitle: "Por qué subir con nosotros",
+      b1t: "Guiada por baristas capacitados",
+      b1p: "Cada sesión la dirige un barista que responde tus preguntas y te ayuda a encontrar las palabras para lo que pruebas.",
+      b2t: "Tres cafés, una mesa",
+      b2p: "Comparas orígenes y métodos de preparación lado a lado, así que las diferencias se notan fácilmente, incluso si es tu primera cata.",
+      b3t: "Lleva la montaña a casa",
+      b3p: "Cada invitado se va con 250 gramos del café destacado y una guía de preparación tamaño postal con recetas para prensa francesa, cafetera italiana, Chemex y V60.",
+      pcTitle: "Cuatro postales para llevar a casa",
+      pcHint: "Toca una postal para voltearla y leer la receta.",
+      pcGreet: "Saludos desde la montaña",
+      pcFlip: "Voltéala",
+      dlTitle: "Descarga para imprimir",
+      dlNote: "Cada postal mide 6 × 4 pulgadas a 300 dpi. Imprime el frente y el reverso por las dos caras de la misma hoja.",
+      dlPdf: "Las cuatro postales (PDF)",
+      dlFront: "Frente (PNG)",
+      dlBack: "Reverso (PNG)",
+      pcFpName: "Prensa francesa",
+      pcFp1: "30 g de café molido grueso",
+      pcFp2: "450 ml de agua a 93 °C",
+      pcFp3: "Deja reposar 4 minutos y presiona despacio.",
+      pcMkName: "Cafetera italiana",
+      pcMk1: "Llena la base con agua caliente hasta la válvula.",
+      pcMk2: "Pon café de molido medio-fino en el filtro, sin apretar.",
+      pcMk3: "Calienta a fuego bajo y retírala cuando el chorro se ponga pálido.",
+      pcCx1: "40 g de café de molido medio-grueso",
+      pcCx2: "600 ml de agua a 92 °C, empezando con 80 ml para el bloom",
+      pcCx3: "Vierte en círculos y termina en unos 4 minutos.",
+      pcV1: "20 g de café de molido medio-fino",
+      pcV2: "300 ml de agua a 92 °C, empezando con 40 ml para el bloom",
+      pcV3: "Vierte en círculos y termina en unos 3 minutos.",
+      coffeeTitle: "La cumbre de esta temporada: Colibrí",
+      story: "Colibrí crece en la Finca El Paraíso, en la zona de Ojo de Agua, en Riosucio, Caldas, en el corazón de la región cafetera de Colombia. A unos 1.800 metros sobre el nivel del mar, el aire de montaña es fresco y las cerezas maduran despacio, y esa maduración lenta le da al café más dulzor y un sabor más limpio.",
+      fOrigin: "Origen", fVariety: "Variedad", fAltitude: "Altitud", fProcess: "Proceso",
+      fRoast: "Tueste", fBody: "Cuerpo", fAcidity: "Acidez",
+      vAltitude: "Unos 1.800 metros", vProcess: "Lavado", vRoast: "Medio",
+      vBody: "Medio y sedoso", vAcidity: "Brillante y jugosa",
+      climbTitle: "Cómo sube el sabor",
+      n1t: "Panela", n1p: "El primer sorbo es dulce y redondo, como azúcar morena tibia.",
+      n2t: "Manzana roja", n2p: "En el medio, la taza se vuelve jugosa y fresca.",
+      n3t: "Cáscara de naranja", n3p: "El final es limpio, cítrico y largo.",
+      brewTitle: "Dos formas de servirlo",
+      v60: "Un gotero en forma de cono con filtro de papel. Prepara una taza limpia y brillante que resalta la fruta del café.",
+      chemex: "Una cafetera de vidrio con un filtro grueso. Retiene los aceites y crea una taza suave y elegante, con una dulzura delicada.",
+      recipe: "Nuestra receta base usa una proporción de uno a quince: 20 gramos de café molido por 300 mililitros de agua a 92 grados Celsius.",
+      contactTitle: "Reserva tu cupo.",
+      contactP: "Las sesiones son todos los viernes y sábados a las 4:00 p. m. Cada mesa tiene solo ocho cupos, así que reserva con tiempo.",
+      cEmail: "Correo:", cPhone: "Teléfono y WhatsApp:",
+      cLocation: "Ubicación: Riosucio, Caldas, Colombia.",
+      small: "El Paraíso Coffee Lab. Café de especialidad, probado con calma y con 🤍."
+    }
+  };
+
+  /* Contour map */
+  var svg = document.getElementById('map');
+  var NS = 'http://www.w3.org/2000/svg';
+  var cx = 320, cy = 320, rings = 17;
+  for (var i = 1; i <= rings; i++) {
+    var r = 30 + i * 14.5, d = '';
+    for (var s = 0; s <= 120; s++) {
+      var a = (s / 120) * Math.PI * 2;
+      var wob = 1 + 0.09 * Math.sin(3 * a + i * 0.45) + 0.055 * Math.sin(5 * a - i * 0.7) + 0.03 * Math.sin(9 * a + i);
+      var x = cx + r * wob * Math.cos(a) * 1.04;
+      var y = cy + r * wob * Math.sin(a) * 0.93;
+      d += (s === 0 ? 'M' : 'L') + x.toFixed(1) + ' ' + y.toFixed(1);
+    }
+    var p = document.createElementNS(NS, 'path');
+    p.setAttribute('d', d + 'Z');
+    p.setAttribute('pathLength', '1');
+    p.setAttribute('class', 'ring' + (i % 5 === 0 ? ' index' : ''));
+    p.style.animationDelay = (i * 0.07).toFixed(2) + 's';
+    svg.appendChild(p);
+  }
+  var g = document.createElementNS(NS, 'g');
+  g.innerHTML =
+    '<circle cx="320" cy="320" r="44" fill="var(--cherry)"/>' +
+    '<rect x="355" y="306" width="26" height="28" rx="13" fill="none" stroke="var(--cherry)" stroke-width="8"/>' +
+    '<circle cx="320" cy="320" r="31" fill="var(--cup)"/>' +
+    '<ellipse cx="312" cy="311" rx="14" ry="8" fill="#C98A52" opacity="0.7" transform="rotate(-25 312 311)"/>' +
+    '<text class="tag" id="tag" x="320" y="256" text-anchor="middle">1,800 m</text>';
+  svg.appendChild(g);
+
+  /* Language switch */
+  var buttons = document.querySelectorAll('.lang button');
+
+  function setLang(lang, save) {
+    var t = T[lang] || T.en;
+    document.documentElement.lang = lang;
+    document.title = t.title;
+    document.querySelectorAll('[data-i18n]').forEach(function (el) {
+      el.textContent = t[el.getAttribute('data-i18n')];
+    });
+    document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+      el.innerHTML = t[el.getAttribute('data-i18n-html')];
+    });
+    svg.setAttribute('aria-label', t.aria);
+    document.getElementById('tag').textContent = t.tag;
+    document.querySelectorAll('[data-pdf]').forEach(function (a) { a.href = 'postcards/postales-' + lang + '.pdf'; });
+    document.querySelectorAll('[data-png]').forEach(function (a) { a.href = 'postcards/' + lang + '/' + a.getAttribute('data-png') + '-' + lang + '.png'; });
+    buttons.forEach(function (b) {
+      b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang ? 'true' : 'false');
+    });
+    if (save) {
+      try { localStorage.setItem('lang', lang); } catch (e) {}
+    }
+  }
+
+  buttons.forEach(function (b) {
+    b.addEventListener('click', function () { setLang(b.getAttribute('data-lang'), true); });
+  });
+
+  document.querySelectorAll('.pc').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var flipped = btn.getAttribute('aria-pressed') === 'true';
+      btn.setAttribute('aria-pressed', flipped ? 'false' : 'true');
+      btn.querySelector('.front').setAttribute('aria-hidden', flipped ? 'false' : 'true');
+      btn.querySelector('.back').setAttribute('aria-hidden', flipped ? 'true' : 'false');
+    });
+  });
+
+  var saved = null;
+  try { saved = localStorage.getItem('lang'); } catch (e) {}
+  if (saved === 'es') { setLang('es', false); }
+})();
+</script>
+</body>
+</html>
