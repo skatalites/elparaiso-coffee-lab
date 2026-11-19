@@ -100,10 +100,13 @@
   .map .tag { font-family: var(--body); font-size: 15px; font-weight: 700; fill: var(--cherry); paint-order: stroke; stroke: var(--paper); stroke-width: 5px; }
   @keyframes draw { to { stroke-dashoffset: 0; } }
   .map .ring { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.6s ease-out forwards; }
+  @keyframes fade { from { opacity: 0; } }
   @media (prefers-reduced-motion: reduce) {
-    .map .ring { animation: none; stroke-dashoffset: 0; }
+    .map .ring { stroke-dasharray: none; stroke-dashoffset: 0; animation: fade 1.6s ease-out backwards; }
     html { scroll-behavior: auto; }
   }
+  .mapbox { min-width: 0; }
+  .replay { display: block; margin: 0.6rem auto 0; padding: 0.4rem 0.6rem; background: none; border: 0; cursor: pointer; font: 700 0.9rem var(--body); color: var(--ink); text-decoration: underline; text-decoration-color: var(--honey); text-decoration-thickness: 3px; text-underline-offset: 4px; }
 
   /* Intro */
   .intro { padding-block: clamp(2rem, 5vw, 4rem); }
@@ -211,7 +214,7 @@
   }
   @media print {
     :root { --paper: #fff; }
-    .btn, .lang, .dl { display: none; }
+    .btn, .lang, .dl, .replay { display: none; }
     .map .ring { animation: none; stroke-dashoffset: 0; }
     section { break-inside: avoid; }
   }
@@ -234,7 +237,10 @@
       <p class="lede" data-i18n="lede">A guided coffee tasting that takes you from the cherry on the mountain to the cup in your hands.</p>
       <a class="btn" href="#contact" data-i18n="cta">Reserve your seat</a>
     </div>
-    <svg class="map" id="map" viewBox="0 0 640 640" role="img" aria-label="A map of contour lines rising to a summit, where a cup of coffee sits at the top."></svg>
+    <div class="mapbox">
+      <svg class="map" id="map" viewBox="0 0 640 640" role="img" aria-label="A map of contour lines rising to a summit, where a cup of coffee sits at the top."></svg>
+      <button type="button" class="replay" id="replay" data-i18n="replay">Replay animation</button>
+    </div>
   </div>
 </header>
 
@@ -435,7 +441,7 @@
     <p data-i18n="contactP">Sessions run every Friday and Saturday at 4:00 p.m. Each table has only eight seats, so book early.</p>
     <ul>
       <li><span data-i18n="cEmail">Email:</span> <a href="mailto:hello@elparaisocoffeelab.co">hello@elparaisocoffeelab.co</a></li>
-      <li><span data-i18n="cPhone">Phone and WhatsApp:</span> +57 300 000 0000</li>
+      <li><span data-i18n="cPhone">Phone and WhatsApp:</span> +57 301 725 7889</li>
       <li>Instagram: @elparamisocoffeelab</li>
       <li data-i18n="cLocation">Location: Riosucio, Caldas, Colombia.</li>
     </ul>
@@ -465,6 +471,7 @@
       pcHint: "Tap a postcard to flip it and read the recipe.",
       pcGreet: "Greetings from the mountain",
       pcFlip: "Flip it",
+      replay: "Replay animation",
       dlTitle: "Download for printing",
       dlNote: "Each postcard is 6 × 4 inches at 300 dpi. Print the front and the back on opposite sides of the same sheet.",
       dlPdf: "All four postcards (PDF)",
@@ -523,6 +530,7 @@
       pcHint: "Toca una postal para voltearla y leer la receta.",
       pcGreet: "Saludos desde la montaña",
       pcFlip: "Voltéala",
+      replay: "Repetir animación",
       dlTitle: "Descarga para imprimir",
       dlNote: "Cada postal mide 6 × 4 pulgadas a 300 dpi. Imprime el frente y el reverso por las dos caras de la misma hoja.",
       dlPdf: "Las cuatro postales (PDF)",
@@ -629,6 +637,13 @@
       btn.querySelector('.front').setAttribute('aria-hidden', flipped ? 'false' : 'true');
       btn.querySelector('.back').setAttribute('aria-hidden', flipped ? 'true' : 'false');
     });
+  });
+
+  document.getElementById('replay').addEventListener('click', function () {
+    var rs = svg.querySelectorAll('.ring');
+    rs.forEach(function (r) { r.style.animationName = 'none'; });
+    void svg.getBoundingClientRect();
+    rs.forEach(function (r) { r.style.animationName = ''; });
   });
 
   var saved = null;
